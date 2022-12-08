@@ -3,10 +3,16 @@ package com.myshop.catalog.domain.product;
 import com.myshop.common.jpa.MoneyConverter;
 import com.myshop.common.model.Money;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

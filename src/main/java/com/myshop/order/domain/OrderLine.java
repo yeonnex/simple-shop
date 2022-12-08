@@ -1,6 +1,6 @@
 package com.myshop.order.domain;
 
-import com.myshop.Product;
+import com.myshop.catalog.domain.product.Product;
 import com.myshop.common.model.Money;
 import lombok.Getter;
 
