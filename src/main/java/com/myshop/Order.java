@@ -7,15 +7,24 @@ import java.util.List;
 
 public class Order {
 
+    private OrderNo id;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     private List<OrderLine> orderLines;
     private Money totalAmounts;
     private ShippingInfo shippingInfo;
+    private Orderer orderer;
 
-    public Order(List<OrderLine> orderLines, ShippingInfo shippingInfo) {
+    public Order(List<OrderLine> orderLines, ShippingInfo shippingInfo, Orderer orderer, OrderStatus status) {
+        setOrderer(orderer);
         setOrderLines(orderLines);
         setShippingInfo(shippingInfo);
+    }
+
+    private void setOrderer(Orderer orderer) {
+        if (orderer == null) throw new IllegalArgumentException("no Orderer");
+        this.orderer = orderer;
     }
 
     /**
@@ -50,8 +59,9 @@ public class Order {
 
     private void calculateTotalAmounts() {
         int sum = orderLines.stream()
-                .mapToInt(x -> x.getAmounts())
+                .mapToInt(x -> x.getAmounts().getValue())
                 .sum();
+
         this.totalAmounts = new Money(sum);
     }
 
