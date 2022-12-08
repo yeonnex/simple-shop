@@ -1,4 +1,4 @@
-package com.myshop;
+package com.myshop.common.model;
 
 import lombok.Getter;
 

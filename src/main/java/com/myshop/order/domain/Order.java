@@ -1,5 +1,6 @@
-package com.myshop;
+package com.myshop.order.domain;
 
+import com.myshop.common.model.Money;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
