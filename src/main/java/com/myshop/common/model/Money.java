@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class Money {
     private int value;
-    Money(int value) {
+    public Money(int value) {
         this.value = value;
     }
 
