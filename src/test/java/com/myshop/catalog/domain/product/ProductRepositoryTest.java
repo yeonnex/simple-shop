@@ -59,6 +59,14 @@ class ProductRepositoryTest {
         assertThat(result.size()).isEqualTo(10);
     }
 
+    @Test
+    @DisplayName("nativeQuery 속성을 이용한 상품 상세 조회")
+    void findByDetail_Native() {
+        this.createProductList();
+        List<Product> result = productRepository.findByDetail_Native("상품상세");
+        assertThat(result.size()).isEqualTo(10);
+    }
+
     private void createProductList() {
         for (int i = 1; i <= 10; i++) {
             int value = 1000 + i;
