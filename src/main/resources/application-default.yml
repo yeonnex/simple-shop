@@ -17,6 +17,11 @@ spring:
   sql:
     init:
       mode: always
+  devtools:
+    livereload:
+      enabled: true
+  thymeleaf:
+    cache: false
 
 logging:
   level:

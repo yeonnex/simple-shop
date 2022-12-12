@@ -1,15 +1,22 @@
 package com.myshop.catalog.domain.product;
 
 import com.myshop.common.model.Money;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static com.myshop.catalog.domain.product.QProduct.product;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -18,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ProductRepositoryTest {
     @Autowired
     ProductRepository productRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     @DisplayName("상품 저장 테스트")
@@ -67,17 +76,56 @@ class ProductRepositoryTest {
         assertThat(result.size()).isEqualTo(10);
     }
 
+    @Test
+    @DisplayName("QueryDSL 조회테스트")
+    void queryDslTest() {
+        createProductList();
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        List<Product> result = queryFactory
+                .selectFrom(product)
+                .where(product.sellStatus.eq(ProductSellStatus.SELL))
+                .orderBy(product.price.desc()).fetch();
+        assertThat(result.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("SELL 중인 상품만 조회 테스트 - queryDsl")
+    void getOnly_SELL_Product() {
+        createProductList();
+
+        String detail = "상품상세";
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(product.sellStatus.eq(ProductSellStatus.SELL));
+        booleanBuilder.and(product.detail.like("%" + detail + "%"));
+
+        PageRequest pageable = PageRequest.of(0, 5);
+        Page<Product> result = productRepository.findAll(booleanBuilder, pageable);
+
+        assertThat(result.getContent().size()).isEqualTo(5);
+    }
+
+
     private void createProductList() {
         for (int i = 1; i <= 10; i++) {
             int value = 1000 + i;
-            Product product = Product.builder()
-                    .name("테스트 상품 " + i)
-                    .price(new Money(value))
-                    .detail("테스트 상품상세 " + i)
-                    .sellStatus(ProductSellStatus.SELL)
-                    .stockNumber(30).build();
+            Product newProduct = null;
+            if (i % 2 == 0) {
+                newProduct = Product.builder()
+                        .name("테스트 상품 " + i)
+                        .price(new Money(value))
+                        .detail("테스트 상품상세 " + i)
+                        .sellStatus(ProductSellStatus.SELL)
+                        .stockNumber(30).build();
+            } else {
+                newProduct = Product.builder()
+                        .name("테스트 상품 " + i)
+                        .price(new Money(value))
+                        .detail("테스트 상품상세 " + i)
+                        .sellStatus(ProductSellStatus.SOLD_OUT)
+                        .stockNumber(0).build();
+            }
 
-            productRepository.save(product);
+            productRepository.save(newProduct);
         }
     }
 

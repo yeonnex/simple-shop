@@ -3,12 +3,13 @@ package com.myshop.catalog.domain.product;
 import com.myshop.common.model.Money;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
-    Optional<List<Product>> findByNameContaining(String name);
+public interface ProductRepository extends JpaRepository<Product, Long>, QuerydslPredicateExecutor<Product> {
+
     List<Product> findByNameLikeOrDetailLike(String name, String detail);
 
     List<Product> findByPriceLessThanEqualOrderByPriceDesc(Money price);
