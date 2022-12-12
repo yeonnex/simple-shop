@@ -1,6 +1,7 @@
 package com.myshop.catalog.domain.product;
 
 import com.myshop.catalog.domain.category.CategoryId;
+import com.myshop.common.jpa.MoneyConverter;
 import com.myshop.common.model.Money;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,9 @@ public class Product {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    @Embedded
+
+    @Column(nullable = false, name = "price")
+    @Convert(converter = MoneyConverter.class)
     private Money price;
     @Column(nullable = false)
     private int stockNumber;

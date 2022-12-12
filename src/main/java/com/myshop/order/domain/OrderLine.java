@@ -1,31 +1,34 @@
 package com.myshop.order.domain;
 
-import com.myshop.catalog.domain.product.Product;
 import com.myshop.catalog.domain.product.ProductId;
+import com.myshop.common.jpa.MoneyConverter;
 import com.myshop.common.model.Money;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+
 @Embeddable
+@Getter
 @NoArgsConstructor
 public class OrderLine {
 
-    @Embedded
+    @Column(name = "product_id")
     private ProductId productId;
-
-    @Embedded
-    private Money price;
     private int quantity;
-    @Embedded
-    private Money amounts;
 
-    public OrderLine(ProductId productId, Money price, int quantity) {
+    @Column(name = "price")
+    @Convert(converter = MoneyConverter.class)
+    private Money price;
+
+    @Column(name = "amounts")
+    @Convert(converter = MoneyConverter.class)
+    private Money amounts;
+    public OrderLine(ProductId productId,int quantity, Money price) {
         this.productId = productId;
-        this.price = price;
         this.quantity = quantity;
+        this.price = price;
         this.amounts = calculateAmounts();
     }
 

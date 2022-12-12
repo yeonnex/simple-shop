@@ -1,4 +1,4 @@
-package com.myshop.order.service;
+package com.myshop.order.domain.service;
 
 import com.myshop.member.domain.Member;
 import com.myshop.common.model.Money;
