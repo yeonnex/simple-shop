@@ -1,5 +1,6 @@
 package com.myshop.order.domain.service;
 
+import com.myshop.coupon.domain.Coupon;
 import com.myshop.member.domain.Member;
 import com.myshop.common.model.Money;
 import com.myshop.order.domain.OrderLine;
@@ -9,15 +10,15 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 
 public class CalculateDiscountService {
-    private RuleDiscounter ruleDiscounter;
-    private MemberRepository memberRepository;
-
-    public CalculateDiscountService(RuleDiscounter ruleDiscounter) {
-        this.ruleDiscounter = ruleDiscounter;
+    public Money calculateDiscountAmounts(List<OrderLine> orderLines,
+                                          List<Coupon> coupons) {
+        Money couponDiscount = coupons.stream()
+                .map(coupon -> calculateDiscount(coupon))
+                .reduce(new Money(0), (v1, v2) -> v1.add(v2));
+        return couponDiscount;
     }
 
-    public Money calculateDiscount(List<OrderLine> orderLines, String customerId) {
-        Member customer = memberRepository.findById(Long.valueOf(customerId)).orElseThrow(() ->  new EntityNotFoundException());
-        return ruleDiscounter.applyRules(customer, orderLines);
+    private Money calculateDiscount(Coupon coupon) {
+        return null;
     }
 }

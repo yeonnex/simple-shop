@@ -3,14 +3,11 @@ package com.myshop.order.domain;
 import com.myshop.common.jpa.MoneyConverter;
 import com.myshop.common.model.Money;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -40,7 +37,7 @@ public class Order implements Serializable {
     @Embedded
     private Orderer orderer;
 
-    public Order(List<OrderLine> orderLines, ShippingInfo shippingInfo, Orderer orderer, OrderStatus status) {
+    public Order(List<OrderLine> orderLines, ShippingInfo shippingInfo, Orderer orderer) {
         setOrderer(orderer);
 //        setOrderLines(orderLines);
         setShippingInfo(shippingInfo);
