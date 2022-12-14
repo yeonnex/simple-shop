@@ -2,6 +2,7 @@ package com.myshop.order.domain;
 
 import com.myshop.common.jpa.MoneyConverter;
 import com.myshop.common.model.Money;
+import com.myshop.order.domain.event.ShippingInfoChangedEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,7 @@ public class Order implements Serializable {
 
     public Order(List<OrderLine> orderLines, ShippingInfo shippingInfo, Orderer orderer) {
         setOrderer(orderer);
-//        setOrderLines(orderLines);
+        setOrderLines(orderLines);
         setShippingInfo(shippingInfo);
     }
 
@@ -56,6 +57,7 @@ public class Order implements Serializable {
     public void changeShippingInfo(ShippingInfo newShippingInfo) {
         verifyNotYetShipped();
         setShippingInfo(shippingInfo);
+        // TODO 배송지 변경 이벤트 발생시키기 Events.raise(new ShippingInfoChangedEvent())
     }
 
     /**
@@ -73,19 +75,19 @@ public class Order implements Serializable {
         this.shippingInfo = shippingInfo;
     }
 
-//    private void setOrderLines(List<OrderLine> orderLines) {
-//        verifyAtLeastOneOrMoreOrderLines(orderLines);
-//        this.orderLines = orderLines;
-//        calculateTotalAmounts();
-//    }
-//
-//    private void calculateTotalAmounts() {
-//        int sum = orderLines.stream()
-//                .mapToInt(x -> x.getAmounts().getValue())
-//                .sum();
-//
-//        this.totalAmounts = new Money(sum);
-//    }
+    private void setOrderLines(List<OrderLine> orderLines) {
+        verifyAtLeastOneOrMoreOrderLines(orderLines);
+        this.orderLines = orderLines;
+        calculateTotalAmounts();
+    }
+
+    private void calculateTotalAmounts() {
+        int sum = orderLines.stream()
+                .mapToInt(x -> x.getAmounts().getValue())
+                .sum();
+
+        this.totalAmounts = new Money(sum);
+    }
 
     private void verifyAtLeastOneOrMoreOrderLines(List<OrderLine> orderLines) {
         if (orderLines == null || orderLines.isEmpty()) {
